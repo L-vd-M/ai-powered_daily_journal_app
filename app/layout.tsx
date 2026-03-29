@@ -29,7 +29,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ClerkProvider afterSignOutUrl="/sign-in">
+
+        {/* ClerkProvider is a context provider from the Clerk library that manages authentication state and 
+        provides authentication-related functionality to the app. It wraps the entire app to ensure that 
+        authentication state is available throughout the app. The afterSignOutUrl prop specifies where to 
+        redirect users after they sign out, and the signInForceRedirectUrl and signUpForceRedirectUrl props 
+        specify where to redirect users after they sign in or sign up, respectively. */ }
+        <ClerkProvider afterSignOutUrl="/sign-in" signInForceRedirectUrl="/home" signUpForceRedirectUrl="/home">
           {children}
         </ClerkProvider>
       </body>
