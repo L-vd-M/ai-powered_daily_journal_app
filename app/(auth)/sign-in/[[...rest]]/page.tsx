@@ -1,3 +1,5 @@
+// This is the sign-in page for the application, using Clerk's SignIn component for authentication.
+// After signing in, users will be redirected to the home page.
 'use client';
 
 import { SignIn } from '@clerk/nextjs';

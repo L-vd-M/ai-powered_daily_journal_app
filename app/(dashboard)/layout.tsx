@@ -1,9 +1,15 @@
+// This is the main layout for all dashboard pages. It includes the top navigation bar and 
+// ensures that the Clerk user is synced with the Convex users table on every page load.
 import { ClerkLoaded, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { UserSync } from "./UserSync";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Sync the signed-in Clerk user into the Convex users table */}
+      <UserSync />
+
       {/* Top Navigation Bar */}
       <nav className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-6xl mx-auto flex justify-between items-center">

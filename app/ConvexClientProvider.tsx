@@ -1,3 +1,4 @@
+// This component sets up the Convex client and integrates it with Clerk for authentication.
 "use client";
 
 import { ConvexProviderWithClerk } from "convex/react-clerk";

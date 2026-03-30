@@ -1,3 +1,4 @@
+// This layout is used for all auth-related pages (sign in, sign up, etc.)
 import type { ReactNode } from "react";
 
 // Auth layout (dark hero bg, centered)

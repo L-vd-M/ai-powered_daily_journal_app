@@ -1,3 +1,5 @@
+// This is the sign-up page for the application, using Clerk's SignUp component for authentication.
+// After signing up, users will be redirected to the home page.
 'use client';
 
 import { SignUp } from '@clerk/nextjs';

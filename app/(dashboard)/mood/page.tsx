@@ -20,7 +20,7 @@ export default function Home() {
         ></textarea>
 
         {/* Button to post journal entry */}
-        <div className="flex min-h-svh items-center justify-center">
+        <div className="flex mt-5 items-center justify-center">
           <Button>Post to Journal</Button>
         </div>
       </main>

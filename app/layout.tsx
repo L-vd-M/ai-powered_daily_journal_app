@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { ConvexClientProvider } from './ConvexClientProvider'
 import './globals.css'
 
 const geistSans = Geist({
@@ -35,8 +36,11 @@ export default function RootLayout({
         authentication state is available throughout the app. The afterSignOutUrl prop specifies where to 
         redirect users after they sign out, and the signInForceRedirectUrl and signUpForceRedirectUrl props 
         specify where to redirect users after they sign in or sign up, respectively. */ }
+        {/* ClerkProvider is outermost so ConvexProviderWithClerk can access Clerk auth hooks */}
         <ClerkProvider afterSignOutUrl="/sign-in" signInForceRedirectUrl="/home" signUpForceRedirectUrl="/home">
-          {children}
+          <ConvexClientProvider>
+            {children}
+          </ConvexClientProvider>
         </ClerkProvider>
       </body>
     </html>
