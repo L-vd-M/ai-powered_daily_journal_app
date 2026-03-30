@@ -33,7 +33,10 @@ export default function JournalPage() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+      <main className="flex flex-1 w-full max-w-3xl flex-col py-12 px-16 bg-white dark:bg-black">
+        <h1 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-white">
+          New Journal Entry
+        </h1>
         {/* Textbox for entering journal entry */}
         <textarea
           className="w-full h-64 p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
