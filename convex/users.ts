@@ -10,7 +10,7 @@ export const upsertUser = mutation({
 
     // Temporary: log FULL identity object to diagnose missing claims 
     // (Debugging only - do not log personally identifiable information in production!)
-    console.log("[upsertUser] full identity:", JSON.stringify(identity));
+    // console.log("[upsertUser] full identity:", JSON.stringify(identity));
 
     const existing = await ctx.db
       .query("users")

@@ -18,13 +18,13 @@ export default defineSchema({
   // millisecond timestamp.
   journalEntries: defineTable({
     userId: v.id("users"),
-    title: v.string(),
-    content: v.string(),
-    createdAt: v.number(), // Unix timestamp (ms) — used for date+time ordering
+    title: v.string(),                  // Journal entry title
+    content: v.string(),                // Main content of the journal entry
+    createdAt: v.number(),              // Unix timestamp (ms) — used for date+time ordering
 
-    // AI mood analysis fields (populated later)
+    // AI mood analysis fields (populated later after each journal entry is created and posted)
     moodLabel: v.optional(v.string()),   // "Happy", "Anxious", "Sad", etc.
-    moodScore: v.optional(v.number()),   // -1.0 to 0.0 to 1.0
+    moodScore: v.optional(v.number()),   // -100.0 to 0.0 to 100.0 {negative: unhappy/negative mood, positive: happy/positive mood}
     moodInsight: v.optional(v.string()), // Short AI-generated insight
     analysedAt: v.optional(v.number()),  // When the analysis was last run
   })

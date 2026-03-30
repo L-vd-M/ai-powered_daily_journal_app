@@ -1,6 +1,17 @@
-import { mutation, query } from "./_generated/server";
+// This file defines the Convex queries, actions, and mutations related to journal entries. It includes 
+// a helper function `requireUser` to ensure that the user is authenticated and has a corresponding 
+// record in the `users` table before allowing them to create, update, or delete journal entries. 
+// The queries allow fetching all entries for the current user or a specific entry by ID, while 
+// the mutations handle creating, updating, and deleting entries owned by the user. 
+
+// libraries
+import { mutation, query, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
+
+// // OpenAI API client setup (for mood analysis)
+// import OpenAI from "openai";
+
 
 // Internal helper — look up the authenticated user's document or throw.
 async function requireUser(ctx: QueryCtx | MutationCtx) {
@@ -39,7 +50,7 @@ export const createJournalEntry = mutation({
   },
 });
 
-// Update the title and/or content of an entry owned by the current user.
+// Update the title and/or content of an entry owned by the current user. [Additional mutation if needed]
 export const updateJournalEntry = mutation({
   args: {
     entryId: v.id("journalEntries"),
@@ -57,7 +68,7 @@ export const updateJournalEntry = mutation({
   },
 });
 
-// Delete an entry owned by the current user.
+// Delete an entry owned by the current user. [Additional mutation if needed]
 export const removeJournalEntry = mutation({
   args: {
     entryId: v.id("journalEntries"),
@@ -95,6 +106,25 @@ export const listUserStoredEntries = query({
       .withIndex("by_userId_and_createdAt", (q) => q.eq("userId", user._id))
       .order("desc")
       .collect();
+  },
+});
+
+// Internal mutation — patches a journalEntry document with AI mood analysis results.
+export const saveMoodAnalysis = internalMutation({
+  args: {
+    entryId: v.id("journalEntries"),
+    moodLabel: v.string(),
+    moodScore: v.number(),
+    moodInsight: v.string(),
+    analysedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.entryId, {
+      moodLabel: args.moodLabel,
+      moodScore: args.moodScore,
+      moodInsight: args.moodInsight,
+      analysedAt: args.analysedAt,
+    });
   },
 });
 
