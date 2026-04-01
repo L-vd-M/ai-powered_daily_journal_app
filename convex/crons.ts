@@ -29,11 +29,11 @@ crons.daily(
 
 // TESTING ONLY: uncomment this block to run reminder sweeps every 5 minutes.
 // Keep this disabled in production to avoid excessive reminder processing.
-// crons.interval(
-//   "journal-reminder-test-every-5-minutes",
-//   { minutes: 5 },
-//   internal.reminders.runReminderSweep,
-//   { runLabel: "test" }
-// );
+crons.interval(
+  "journal-reminder-test-every-5-minutes",
+  { minutes: 5 },
+  internal.reminders.runReminderSweep,
+  { runLabel: "test" }
+);
 
 export default crons;
