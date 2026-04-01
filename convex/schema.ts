@@ -11,6 +11,9 @@ export default defineSchema({
     imageUrl: v.optional(v.string()),
     createdAt: v.number(), // Unix timestamp (ms)
     lastLogin: v.optional(v.number()), // Unix timestamp (ms) — updated on every sign-in
+    pendingReminder: v.optional(v.boolean()), // True if user should be shown a reminder banner
+    lastReminderAt: v.optional(v.number()), // Unix timestamp (ms) for last reminder run
+    lastReminderRunLabel: v.optional(v.string()), // "morning" or "evening"
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 
   // One document per journal entry.

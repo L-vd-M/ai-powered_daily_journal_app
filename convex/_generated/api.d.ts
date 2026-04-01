@@ -9,7 +9,9 @@
  */
 
 import type * as ai from "../ai.js";
+import type * as crons from "../crons.js";
 import type * as journals from "../journals.js";
+import type * as reminders from "../reminders.js";
 import type * as users from "../users.js";
 
 import type {
@@ -20,7 +22,9 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   ai: typeof ai;
+  crons: typeof crons;
   journals: typeof journals;
+  reminders: typeof reminders;
   users: typeof users;
 }>;
 
