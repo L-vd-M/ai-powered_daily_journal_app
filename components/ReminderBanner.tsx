@@ -55,7 +55,7 @@ export function ReminderBanner({
             <p className="text-blue-100 text-sm">{description}</p>
           </div>
           <div className="flex items-center gap-2 whitespace-nowrap">
-            <Link href="/dashboard/journal">
+            <Link href="/journal">
               <Button
                 size="sm"
                 className="bg-white text-blue-600 hover:bg-blue-50"

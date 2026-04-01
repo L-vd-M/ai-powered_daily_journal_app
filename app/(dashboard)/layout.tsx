@@ -4,12 +4,15 @@ import { ClerkLoaded, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { UserSync } from "./UserSync";
 import { DashboardClient } from "./DashboardClient";
+import { ProfileGuard } from "./ProfileGuard";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sync the signed-in Clerk user into the Convex users table */}
       <UserSync />
+      {/* Redirect to onboarding if timezone / country are missing */}
+      <ProfileGuard />
 
       <DashboardClient>
         {/* Top Navigation Bar */}

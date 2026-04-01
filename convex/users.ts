@@ -9,8 +9,8 @@ export const upsertUser = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
 
-    // Temporary: log FULL identity object to diagnose missing claims 
-    // (Debugging only - do not log personally identifiable information in production!)
+    // Temporary: log FULL identity object to diagnose missing email address and name of the user 
+    // (Debugging only)
     // console.log("[upsertUser] full identity:", JSON.stringify(identity));
 
     const existing = await ctx.db
@@ -111,6 +111,38 @@ export const unsubscribeFromPush = mutation({
 
     await ctx.db.patch(user._id, {
       pushSubscription: undefined,
+    });
+
+    return { success: true };
+  },
+});
+
+// Update the user's profile fields (called from the onboarding page that comes after sign-up).
+export const updateUserProfile = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    timezone: v.string(),
+    country: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) throw new Error("User not found");
+
+    await ctx.db.patch(user._id, {
+      name: args.name,
+      email: args.email,
+      timezone: args.timezone,
+      country: args.country,
     });
 
     return { success: true };

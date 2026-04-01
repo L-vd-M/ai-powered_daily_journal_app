@@ -12,7 +12,8 @@ export default function SignUpPage() {
           <h1 className="text-3xl font-bold text-white">Create Account</h1>
           <p className="text-gray-400 mt-2">Start your journaling journey</p>
         </div>
-        <SignUp forceRedirectUrl="/home" />
+        {/* <SignUp forceRedirectUrl="/home" /> Changed the redirect to onboarding to ensure users complete their profile setup */}
+        <SignUp forceRedirectUrl="/onboarding" />
       </div>
     </div>
   );
