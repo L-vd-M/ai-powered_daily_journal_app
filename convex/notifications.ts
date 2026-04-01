@@ -5,9 +5,16 @@ import { v } from "convex/values";
 
 /**
  * Sends multimodal notifications to a user:
- * 1. In-app banner (via pendingReminder flag — handled by reminders.ts)
- * 2. Web push notification (browser-based, if subscription exists)
- * 3. Email notification (via Resend, if email exists and API key configured)
+ * 1. In-app banner:
+ *    - Reminder flag is set in `convex/reminders.ts` via `internal.users.setUserReminder`
+ *    - Pending reminder state is stored in `convex/users.ts`
+ *    - Banner visibility is decided in `app/(dashboard)/DashboardClient.tsx`
+ *    - Banner UI is rendered in `components/ReminderBanner.tsx`
+ *    - This file does NOT render the in-app banner UI
+ * 2. Web push notification:
+ *    - Implemented in this file in the `pushSubscription` block below
+ * 3. Email notification:
+ *    - Implemented in this file in the `userEmail` / Resend block below
  */
 export const sendReminderNotifications = internalAction({
   args: {
@@ -33,7 +40,7 @@ export const sendReminderNotifications = internalAction({
       email: { sent: false, error: null as string | null },
     };
 
-    // 1. Send Web Push Notification
+    // 2. Web push notification is implemented in this file.
     if (pushSubscription) {
       try {
         const webPush = await import("web-push");
@@ -86,7 +93,7 @@ export const sendReminderNotifications = internalAction({
       }
     }
 
-    // 2. Send Email Notification
+    // 3. Email notification is implemented in this file via Resend.
     if (userEmail) {
       try {
         const resendApiKey = process.env.RESEND_API_KEY;
@@ -106,10 +113,10 @@ export const sendReminderNotifications = internalAction({
             runLabel === "morning"
               ? `<h2>Good morning, ${displayName}!</h2>
                  <p>Start your day by journaling about how you're feeling. Taking a few minutes to reflect can set a positive tone for the day ahead.</p>
-                 <p><a href="${process.env.APP_URL || "https://journal.local"}/dashboard/journal" style="background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">Write Journal Entry</a></p>`
+                <p><a href="${process.env.APP_URL || "https://journal.local"}/journal" style="background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">Write Journal Entry</a></p>`
               : `<h2>Good evening, ${displayName}!</h2>
                  <p>Reflect on your day and capture your thoughts. Evening journaling can help you process your experiences and prepare for tomorrow.</p>
-                 <p><a href="${process.env.APP_URL || "https://journal.local"}/dashboard/journal" style="background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">Write Journal Entry</a></p>`;
+                <p><a href="${process.env.APP_URL || "https://journal.local"}/journal" style="background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">Write Journal Entry</a></p>`;
 
           const response = await resend.emails.send({
             from: process.env.RESEND_FROM_EMAIL || "noreply@journal-app.com",
