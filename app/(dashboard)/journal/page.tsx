@@ -11,6 +11,7 @@ export default function JournalPage() {
 
   const createJournalEntry = useMutation(api.journals.createJournalEntry);
   const analyseMood = useAction(api.ai.analyseMoodForEntry);
+  const clearReminder = useMutation(api.users.clearPendingReminder);
 
   async function handlePost() {
     if (!content.trim()) return;
@@ -36,6 +37,9 @@ export default function JournalPage() {
 
       setStatus("analysing");
       await analyseMood({ entryId, content: trimmed });
+
+      // Clear the reminder flag since user has now journaled
+      await clearReminder();
 
       setContent("");
       setStatus("done");

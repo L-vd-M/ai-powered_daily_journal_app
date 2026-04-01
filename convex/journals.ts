@@ -5,7 +5,7 @@
 // the mutations handle creating, updating, and deleting entries owned by the user. 
 
 // libraries
-import { mutation, query, internalMutation } from "./_generated/server";
+import { mutation, query, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
 
@@ -275,5 +275,21 @@ export const getLastMonthMoodScores = query({
       moodScores,
       monthAverage,
     };
+  },
+});
+
+// Internal query: Get the most recent entry for a user within a time window (for cron reminder sweep)
+export const getUserRecentEntry = internalQuery({
+  args: {
+    userId: v.id("users"),
+    since: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("journalEntries")
+      .withIndex("by_userId_and_createdAt", (q) =>
+        q.eq("userId", args.userId).gte("createdAt", args.since)
+      )
+      .first();
   },
 });
