@@ -14,6 +14,13 @@ export default defineSchema({
     pendingReminder: v.optional(v.boolean()), // True if user should be shown a reminder banner
     lastReminderAt: v.optional(v.number()), // Unix timestamp (ms) for last reminder run
     lastReminderRunLabel: v.optional(v.string()), // "morning" or "evening"
+    pushSubscription: v.optional(v.object({
+      endpoint: v.string(),
+      keys: v.object({
+        auth: v.string(),
+        p256dh: v.string(),
+      }),
+    })), // Browser push notification subscription
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 
   // One document per journal entry.
