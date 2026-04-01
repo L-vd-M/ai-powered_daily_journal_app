@@ -21,6 +21,12 @@ export const analyseMoodForEntry = action({
   handler: async (ctx, args) => {
     const openai = new OpenAI();  // reads OPENAI_API_KEY from Convex environment
 
+    {/* OpenAI API call to analyse the mood of the journal entry content.
+    The system prompt instructs the model to return a JSON object with three fields:
+    - moodLabel: a short description of the dominant emotion
+    - moodScore: a number from -100 (very negative) to 100 (very positive)
+    - moodInsight: a short empathetic observation about the emotional content 
+    Chosen gpt-4o-mini model for analysis due to its balance of performance and cost */}
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
