@@ -1,31 +1,28 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 // Video: https://www.youtube.com/watch?v=lE6RYpe9IT0&list=RDlE6RYpe9IT0
 // Embedded using youtube-nocookie.com (privacy-enhanced mode — no cookies until user interacts)
 const LIST_ID = "PLYwFNfjiOd7OfNspQIk1AfKFvc7dTVuzt";
 const WATCH_URL = `https://www.youtube.com/playlist?list=${LIST_ID}`;
 
+// Build the embed URL as a plain constant — no window.location access needed.
+// The `origin` param is omitted intentionally to avoid SSR/client hydration mismatches.
+const EMBED_SRC =
+  `https://www.youtube.com/embed/videoseries` +
+  `?list=${LIST_ID}` +
+  `&autoplay=1` +
+  `&mute=1` +
+  `&loop=1` +
+  `&playsinline=1` +
+  `&controls=1` +
+  `&rel=0` +
+  `&modestbranding=1` +
+  `&enablejsapi=1`;
+
 export default function YoutubeAmbientPlayer() {
   const [collapsed, setCollapsed] = useState(false);
-  const embedSrc = useMemo(() => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-
-    return (
-      `https://www.youtube.com/embed/videoseries` +
-      `?list=${LIST_ID}` +  // Specify the playlist to play
-      `&autoplay=1` +       // Start playing automatically
-      `&mute=1` +           // Start muted (important for autoplay to work without user interaction in most browsers) 
-      `&loop=1` +           // Loop the playlist (note: YouTube's loop for playlists only works if the playlist contains more than one video)
-      `&playsinline=1` +    // Play inline on mobile devices instead of going fullscreen
-      `&controls=1` +       // Show player controls so users can pause/unmute if they want (important for UX and accessibility)
-      `&rel=0` +            // Don’t show related videos at the end (note: YouTube may still show related videos from the same channel)
-      `&modestbranding=1` + // Minimize YouTube branding
-      `&enablejsapi=1` +    // Enable JavaScript API for further control
-      (origin ? `&origin=${encodeURIComponent(origin)}` : "")
-    );
-  }, []);
 
   return (
     <div className="w-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-zinc-900">
@@ -51,7 +48,7 @@ export default function YoutubeAmbientPlayer() {
       {!collapsed && (
         <div className="relative w-full" style={{ paddingBottom: "56.25%" /* 16:9 */ }}>
           <iframe
-            src={embedSrc}
+            src={EMBED_SRC}
             title="Ambient background music"
             allow="autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
