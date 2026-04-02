@@ -10,9 +10,9 @@ export default function HomePage() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex flex-1 w-full max-w-3xl flex-col py-12 px-16 bg-white dark:bg-black gap-8">
+        {/* Personalized greeting using the user’s name fetched from the database */}
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
-          {/* Personalized greeting */}
-          Welcome back {user ?? "user"}!
+          {user ? `Welcome back ${user}!` : "Welcome back!"}
         </h1>
 
         {/* Ambient music player — loops the selected YouTube mix, starts muted */}
