@@ -16,13 +16,6 @@ export default defineSchema({
     lastReminderRunLabel: v.optional(v.string()), // "morning" or "evening"
     timezone: v.optional(v.string()),  // IANA timezone e.g. "Africa/Johannesburg"
     country: v.optional(v.string()),   // ISO 3166-1 alpha-2 e.g. "ZA"
-    pushSubscription: v.optional(v.object({
-      endpoint: v.string(),
-      keys: v.object({
-        auth: v.string(),
-        p256dh: v.string(),
-      }),
-    })), // Browser push notification subscription
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 
   // One document per journal entry.

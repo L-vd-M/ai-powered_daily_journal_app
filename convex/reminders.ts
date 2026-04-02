@@ -33,12 +33,11 @@ export const runReminderSweep = internalAction({
         runLabel: args.runLabel,
       });
 
-      // Send multimodal notifications (web push + email).
+      // Send email notification.
       await ctx.runAction(internal.notifications.sendReminderNotifications, {
         userId: user._id,
         userName: user.name,
         userEmail: user.email,
-        pushSubscription: user.pushSubscription,
         runLabel: args.runLabel,
       });
     }

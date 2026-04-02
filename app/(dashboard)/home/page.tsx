@@ -1,14 +1,22 @@
+'use client';
+
 import Link from "next/link";
+import YoutubeAmbientPlayer from "@/components/YoutubeAmbientPlayer";
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 export default function HomePage() {
+  const user = useQuery(api.users.getUserName);
   return (
-    // <div className="flex flex-col gap-6">
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col py-12 px-16 bg-white dark:bg-black">
-        {/* <h1 className="text-3xl font-bold"> */}
-        <h1 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-white">
-          Welcome back!
+      <main className="flex flex-1 w-full max-w-3xl flex-col py-12 px-16 bg-white dark:bg-black gap-8">
+        {/* Personalized greeting using the user’s name fetched from the database */}
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
+          {user ? `Welcome back ${user}!` : "Welcome back!"}
         </h1>
+
+        {/* Ambient music player — loops the selected YouTube mix, starts muted */}
+        <YoutubeAmbientPlayer />
 
         <Link
           href="/journal"
