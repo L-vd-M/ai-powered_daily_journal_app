@@ -45,6 +45,24 @@ export const upsertUser = mutation({
   },
 });
 
+// Returns the current user's name
+export const getUserName = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    return user?.name ?? null;
+  },
+});
+
 // Returns the current user's document, or null if not authenticated / not yet created.
 export const getUserDocuments = query({
   args: {},
