@@ -499,7 +499,7 @@ https://ai-powered-daily-journal-app-five.vercel.app
 |---|---|
 | ✅ | GitHub repository with commits and README |
 | ✅ | Live Vercel app |
-| ❌ | Loom / video walkthrough |
+| ✅ | Loom / video walkthrough |
 
 #### Stretch Goals
 
@@ -509,6 +509,16 @@ https://ai-powered-daily-journal-app-five.vercel.app
 | ❌ | Search through journal entries |
 | ❌ | Markdown support in the journal editor |
 | ❌ | Tamagotchi-style mood pet |
+
+#### Loom Video Links
+
+| Video Number | Video Title | Video Link |
+|---|---|---|
+| 1 | Exploring the New Account Setup and Features of Our Application 🌟 | https://www.loom.com/share/bfd7bfa7f78c425a88d16fce3c124dd9 |
+| 2 | AI Powered Daily Journal App - Loom Video 2 - Signing and Application flow explenation | https://www.loom.com/share/f462bd44bc00463eaed74bc2aa57f160 |
+| 3 | AI Powered Daily Journal App - Loom Video 3 - Cron Jobs Explanation and Demonstration | https://www.loom.com/share/a1e64fff4b6c4096b8b905102ef37b3a |
+| 4 | AI Powered Daily Journal App - Loom Video 4 - Finalising Cron Job Showcasing | https://www.loom.com/share/0be36b336e9945b283f37b8e92545d14 |
+| 5 | AI Powered Daily Journal App - Loom Video 5 - Final greetings | https://www.loom.com/share/d795c878a29a444f98bb0367d2a8372a |
 
 ---
 
