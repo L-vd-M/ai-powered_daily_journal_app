@@ -410,25 +410,31 @@ Before deploying, ensure:
 4. Override the **Build Command** with:
 
 ```
-npx convex deploy --yes && next build
+sh -c 'if [ -n "$CONVEX_DEPLOY_KEY" ]; then npx convex deploy --yes; fi' && next build
 ```
 
-> This ensures the Convex production backend is always deployed in sync with the frontend. Without this, pushing new Convex functions (queries, mutations, schema changes) to GitHub will update the frontend but leave the backend on stale code, which causes runtime errors.
+> This command conditionally deploys the Convex backend only when `CONVEX_DEPLOY_KEY` is present. This means:
+> - **Production builds** (`main` branch): Convex is deployed + Next.js is built.
+> - **Preview builds** (`dev` and other branches): `CONVEX_DEPLOY_KEY` is absent so Convex deploy is skipped, only Next.js is built.
+>
+> Without the conditional, Vercel preview builds (e.g. the `dev` branch) will fail because `CONVEX_DEPLOY_KEY` is not available in that environment.
 
 5. Add the following **Environment Variables** in the Vercel dashboard:
 
-| Variable | Value |
-|---|---|
-| `NEXT_PUBLIC_CONVEX_URL` | Your Convex production deployment URL |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | From Clerk dashboard |
-| `CLERK_SECRET_KEY` | From Clerk dashboard |
-| `CONVEX_DEPLOY_KEY` | From Convex dashboard → Settings → Deploy Key (required for `npx convex deploy` in CI) |
+| Variable | Environment | Value |
+|---|---|---|
+| `NEXT_PUBLIC_CONVEX_URL` | All | Your Convex production deployment URL |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | All | From Clerk dashboard |
+| `CLERK_SECRET_KEY` | All | From Clerk dashboard |
+| `CONVEX_DEPLOY_KEY` | **Production only** | From Convex dashboard → Settings → Deploy Key |
+
+> ⚠️ Set `CONVEX_DEPLOY_KEY` for **Production only**, not Preview or Development. This is what controls whether the conditional Convex deploy step runs.
 
 6. Click **Deploy**.
 
 ### Subsequent Deploys
 
-Vercel auto-deploys whenever you push to `main`. Because the build command is `npx convex deploy --yes && next build`, **both** the Convex backend and the Next.js frontend are updated in a single push:
+Vercel auto-deploys whenever you push to `main`. Because the build command conditionally runs `npx convex deploy --yes` when `CONVEX_DEPLOY_KEY` is present, **both** the Convex backend and the Next.js frontend are updated in a single push to `main`:
 
 ```bash
 git checkout main
@@ -436,7 +442,7 @@ git merge --no-ff dev
 git push origin main
 ```
 
-> Vercel will run `npx convex deploy --yes` first (using the `CONVEX_DEPLOY_KEY` env var), then build the Next.js app. This guarantees the frontend and backend are always in sync.
+> Vercel detects this as a Production build, `CONVEX_DEPLOY_KEY` is present, so `npx convex deploy --yes` runs first, then Next.js builds. Preview builds from `dev` or other branches skip the Convex deploy step automatically.
 
 ### Post-Deploy Checklist
 
