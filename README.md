@@ -15,6 +15,7 @@ A full-stack daily journaling application with AI-powered mood analysis, persona
 7. [Cron Jobs](#7-cron-jobs)
 8. [Running the Application Locally](#8-running-the-application-locally)
 9. [Deploying to Vercel](#9-deploying-to-vercel)
+10. [TODOs & Dev Challenge Status](#10-todos--dev-challenge-status)
 
 ---
 
@@ -406,19 +407,34 @@ Before deploying, ensure:
 1. Go to https://vercel.com and log in.
 2. Click **Add New Project** and import your GitHub repository.
 3. Set the **Framework Preset** to `Next.js`.
-4. Add the following **Environment Variables** in the Vercel dashboard:
+4. Override the **Build Command** with:
 
-| Variable | Value |
-|---|---|
-| `NEXT_PUBLIC_CONVEX_URL` | Your Convex production deployment URL |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | From Clerk dashboard |
-| `CLERK_SECRET_KEY` | From Clerk dashboard |
+```
+sh -c 'if [ -n "$CONVEX_DEPLOY_KEY" ]; then npx convex deploy --yes; fi' && next build
+```
 
-5. Click **Deploy**.
+> This command conditionally deploys the Convex backend only when `CONVEX_DEPLOY_KEY` is present. This means:
+> - **Production builds** (`main` branch): Convex is deployed + Next.js is built.
+> - **Preview builds** (`dev` and other branches): `CONVEX_DEPLOY_KEY` is absent so Convex deploy is skipped, only Next.js is built.
+>
+> Without the conditional, Vercel preview builds (e.g. the `dev` branch) will fail because `CONVEX_DEPLOY_KEY` is not available in that environment.
+
+5. Add the following **Environment Variables** in the Vercel dashboard:
+
+| Variable | Environment | Value |
+|---|---|---|
+| `NEXT_PUBLIC_CONVEX_URL` | All | Your Convex production deployment URL |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | All | From Clerk dashboard |
+| `CLERK_SECRET_KEY` | All | From Clerk dashboard |
+| `CONVEX_DEPLOY_KEY` | **Production only** | From Convex dashboard → Settings → Deploy Key |
+
+> ⚠️ Set `CONVEX_DEPLOY_KEY` for **Production only**, not Preview or Development. This is what controls whether the conditional Convex deploy step runs.
+
+6. Click **Deploy**.
 
 ### Subsequent Deploys
 
-Vercel auto-deploys whenever you push to `main`:
+Vercel auto-deploys whenever you push to `main`. Because the build command conditionally runs `npx convex deploy --yes` when `CONVEX_DEPLOY_KEY` is present, **both** the Convex backend and the Next.js frontend are updated in a single push to `main`:
 
 ```bash
 git checkout main
@@ -426,13 +442,7 @@ git merge --no-ff dev
 git push origin main
 ```
 
-For backend-only changes (Convex functions, crons, schema):
-
-```bash
-npx convex deploy
-```
-
-> `npx convex deploy` and Vercel deploy are **independent**. Pushing to GitHub triggers a Vercel frontend deploy. Running `npx convex deploy` pushes backend function changes to your Convex production deployment. Both are needed when you change both frontend and backend.
+> Vercel detects this as a Production build, `CONVEX_DEPLOY_KEY` is present, so `npx convex deploy --yes` runs first, then Next.js builds. Preview builds from `dev` or other branches skip the Convex deploy step automatically.
 
 ### Post-Deploy Checklist
 
@@ -446,6 +456,59 @@ npx convex deploy
 ```
 https://ai-powered-daily-journal-app-five.vercel.app
 ```
+
+---
+
+## 10. TODOs & Dev Challenge Status
+
+### Known Bugs & Pending Work
+
+- [ ] **Settings page** — Users currently have no way to edit their profile details (name, email, timezone, country) after onboarding. A dedicated settings tab needs to be added to the dashboard.
+- [ ] **Clerk sign-up data not auto-populated** — When a user signs up via Clerk, their name and email address are not automatically passed through to the app. Users are currently redirected to the onboarding page to enter these manually. This should be resolved by reading the Clerk user object on the backend (`identity.name`, `identity.email`) during the `upsertUser` call and using those values as defaults.
+
+---
+
+### Dev Challenge Requirements
+
+#### Core Features
+
+| Status | Feature | Notes |
+|---|---|---|
+| ✅ | Write a daily journal entry | Create entry with title + content on `/journal` |
+| ❌ | Edit journal entries | Not yet implemented — entries are read-only after posting. Did however implement database edits in the users table to update user information |
+| ❌ | Delete journal entries | Not yet implemented |
+| ✅ | AI-generated mood detection & reflection | OpenAI returns `moodScore` (−100 to 100), `moodLabel`, and `moodInsight` per entry |
+| ✅ | Daily cron reminder to prompt journaling | Two cron jobs: 10:00 SAST (morning) and 18:00 SAST (evening) |
+| ✅ | Email notifications via cron | Resend sends reminder emails to the user's stored email address |
+| ❌ | Push notifications | Binned for now — see `binned_functions.md` for full reinstatement guide |
+
+#### Tech Stack Requirements
+
+| Status | Requirement | Notes |
+|---|---|---|
+| ✅ | Next.js (App Router) + TailwindCSS + Shadcn | Fully implemented |
+| ✅ | Convex — Database, Functions, Cron Jobs | Schema, queries, mutations, internal actions, crons all in place |
+| ✅ | OpenAI API integration | Mood classification via `gpt-4o-mini` |
+| ✅ | Vercel deployment with environment variables | Auto-deploys from `main`; build command includes `npx convex deploy --yes` |
+| ✅ | GitHub repo with clear commits and README | This repo |
+| ❌ | QA tests (unit or e2e) | No tests written yet. Still want to look at it. |
+
+#### Deliverables
+
+| Status | Deliverable |
+|---|---|
+| ✅ | GitHub repository with commits and README |
+| ✅ | Live Vercel app |
+| ❌ | Loom / video walkthrough |
+
+#### Stretch Goals
+
+| Status | Goal |
+|---|---|
+| ✅ | Sentiment / mood graph over time (1 day / 7 days / 30 days) |
+| ❌ | Search through journal entries |
+| ❌ | Markdown support in the journal editor |
+| ❌ | Tamagotchi-style mood pet |
 
 ---
 
