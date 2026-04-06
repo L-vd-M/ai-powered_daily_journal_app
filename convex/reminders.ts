@@ -14,10 +14,21 @@ export const runReminderSweep = internalAction({
   handler: async (ctx, args) => {
     const now = Date.now();
     const tenMinutesAgo = now - 10 * 60 * 1000;     // 10 minutes in milliseconds
+    const todayUTC = new Date(now).toISOString().slice(0, 10); // "YYYY-MM-DD"
 
     const users = await ctx.runQuery(internal.users.getAllUsers);
 
     for (const user of users) {
+      // Deduplication guard: skip if we already sent this run label's email today.
+      // Prevents duplicate emails caused by action retries and idempotency failures.
+      if (
+        user.lastReminderRunLabel === args.runLabel &&
+        user.lastReminderAt !== undefined &&
+        new Date(user.lastReminderAt).toISOString().slice(0, 10) === todayUTC
+      ) {
+        continue;
+      }
+
       const recentEntry = await ctx.runQuery(internal.journals.getUserRecentEntry, {
         userId: user._id,
         since: tenMinutesAgo,
