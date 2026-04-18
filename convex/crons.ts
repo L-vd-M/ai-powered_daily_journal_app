@@ -12,20 +12,20 @@ import { internal } from "./_generated/api";
 const crons = cronJobs();
 
 // Morning reminder sweep (10:00 SAST / 08:00 UTC)
-crons.daily(
-  "journal-reminder-morning",
-  { hourUTC: 8, minuteUTC: 0 },
-  internal.reminders.runReminderSweep,
-  { runLabel: "morning" }
-);
+// crons.daily(
+//   "journal-reminder-morning",
+//   { hourUTC: 8, minuteUTC: 0 },
+//   internal.reminders.runReminderSweep,
+//   { runLabel: "morning" }
+// );
 
 // Evening reminder sweep (18:00 SAST / 16:00 UTC)
-crons.daily(
-  "journal-reminder-evening",
-  { hourUTC: 16, minuteUTC: 0 },
-  internal.reminders.runReminderSweep,
-  { runLabel: "evening" }
-);
+// crons.daily(
+//   "journal-reminder-evening",
+//   { hourUTC: 16, minuteUTC: 0 },
+//   internal.reminders.runReminderSweep,
+//   { runLabel: "evening" }
+// );
 
 // TESTING ONLY: uncomment this block to run reminder sweeps every 5 minutes.
 // Keep this disabled in production to avoid excessive reminder processing.
